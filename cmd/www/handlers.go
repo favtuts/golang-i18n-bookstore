@@ -3,6 +3,10 @@ package main
 import (
 	"net/http"
 
+	// Import the internal/translations package, so that its init()
+	// function is called
+	_ "github.com/favtuts/golang-i18n-bookstore/internal/translations"
+
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )

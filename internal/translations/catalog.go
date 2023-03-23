@@ -44,10 +44,10 @@ var messageKeyToIndex = map[string]int{
 }
 
 var de_DEIndex = []uint32{ // 2 elements
-	0x00000000, 0x00000000,
+	0x00000000, 0x00000011,
 } // Size: 32 bytes
 
-const de_DEData string = ""
+const de_DEData string = "\x04\x00\x01\n\f\x02Willkommen!"
 
 var en_GBIndex = []uint32{ // 2 elements
 	0x00000000, 0x0000000e,
@@ -56,9 +56,9 @@ var en_GBIndex = []uint32{ // 2 elements
 const en_GBData string = "\x04\x00\x01\n\t\x02Welcome!"
 
 var fr_CHIndex = []uint32{ // 2 elements
-	0x00000000, 0x00000000,
+	0x00000000, 0x00000011,
 } // Size: 32 bytes
 
-const fr_CHData string = ""
+const fr_CHData string = "\x04\x00\x01\n\f\x02Bienvenue !"
 
-// Total table size 110 bytes (0KiB); checksum: 97DCA4E7
+// Total table size 144 bytes (0KiB); checksum: 85795B15

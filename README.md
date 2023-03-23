@@ -231,4 +231,41 @@ $ tree
 
 We can see that the `go generate` command has automatically generated an `internal/translations/catalog.go` file for us (which we'll look at in a minute), and a locales folder containing `out.gotext.json` files for each of our target languages.
 
+# translating the Messages
 
+The workflow for adding a translation goes like this:
+
+1. You generate the `out.gotext.json` files containing the messages which need to be translated (which we've just done).
+2. You send these files to a translator, who edits the JSON to include the necessary translations. They then send the updated files back to you.
+3. You then save these updated files with the name `messages.gotext.json` in the folder for the appropriate language.
+
+For demonstration purposes, let's quickly simulate this workflow by copying the `out.gotext.json` files to `messages.gotext.json` files, and updating them to include the translated messages like so:
+
+```
+$ cp internal/translations/locales/de-DE/out.gotext.json internal/translations/locales/de-DE/messages.gotext.json
+$ cp internal/translations/locales/fr-CH/out.gotext.json internal/translations/locales/fr-CH/messages.gotext.json
+```
+
+Let's make translaction for messages file, then run our `go generate` command again. This time, it should execute without any warning messages about missing translations.
+```
+$ go generate ./internal/translations/translations.go
+```
+
+The final step in getting this working is to import the `internal/translations` package in our `cmd/www/handlers.go` file. This will ensure that the `init()` function in `internal/translations/catalog.go` is called, and the default message catalog is updated to be the one containing our translations. Because we won't actually be referencing anything in the `internal/translations` package directly, we'll need to alias the import path to the blank identifer `_` to prevent the Go compiler from complaining.
+
+And then run the application:
+```
+$ go run ./cmd/www/
+```
+
+Alright, let's try this out! When your restart the application and try making some requests, you should now see the `"Welcome!"` message translated into the appropriate language.
+```
+$ curl localhost:4018/en-gb
+Welcome!
+
+$ curl localhost:4018/de-de
+Willkommen!
+
+$ curl localhost:4018/fr-ch
+Bienvenue !
+```
