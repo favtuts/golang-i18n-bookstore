@@ -35,7 +35,7 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 	// Define a variable to hold the number of books. In a real application
 	// this would probably be retrieved by making a database query or
 	// something similar.
-	var totalBookCount = 1_252_794
+	var totalBookCount = 1
 
 	// Initialize a message.Printer which uses the target lanuage.
 	p := message.NewPrinter(lang)

@@ -298,6 +298,8 @@ $ go generate ./internal/translations/translations.go
 
 When you restart the `cmd/www` application and make some HTTP requests again, you should now see the new translated messages like so:
 ```
+$ go run ./cmd/www/
+
 $ curl localhost:4018/en-gb
 Welcome!
 1,252,794 books available
@@ -312,3 +314,47 @@ Bienvenue !
 ```
 
 As we'll as the translations being applied by our `message.Printer`, it's also smart enough to output the interpolated integer value with the correct number formatting for each language. We can see here that our `en-GB` locale uses the "," character as a thousands separator, whereas `de-DE` uses "." and `fr-CH` uses the whitespace " ". A similar thing is done for decimal separators too.
+
+
+# dealing with pluralization
+
+Let's update the `handleHome()` function so that the totalBookCount value is 1. When we restart the application and make a request to `localhost:4018/en-gb` now.
+```
+$ curl localhost:4018/en-gb
+Welcome!
+1 books available
+```
+
+That's right, we see the message `"1 books available"`, which isn't correct English because of the plural noun books. It would be better if this message read `1 book available` or — even better — `One book available` instead.
+
+Happily, it's possible for us to specify alternative translations based on the value of an interpolated variable in our `messages.gotext.json` files.
+
+Let's start by demonstrating this for our `en-GB` locale. If you're following along, copy the `en-GB/out.gotext.json` file to `en-GB/messages.gotext.json`:
+
+```
+$ cp internal/translations/locales/en-GB/out.gotext.json internal/translations/locales/en-GB/messages.gotext.json
+```
+
+Now, rather than the `translation` value being a simple string we have set it to a JSON object that instructs the message catalog to use different translations depending on the value of the `TotalBookCount` placeholder. The key part here is the cases value, which contains the translations to use for different values of the placeholder.
+
+Use `go generate` again to update the message catalog:
+```
+$ go generate ./internal/translations/translations.go
+```
+
+And if you restart the web application and make some HTTP requests, you should now see the appropriate message for 1 book:
+```
+$ go run ./cmd/www/
+
+$ curl localhost:4018/en-gb
+Welcome!
+One book available
+
+$ curl localhost:4018/de-de
+Willkommen!
+Ein Buch erhältlich
+
+$ curl localhost:4018/fr-ch
+Bienvenue !
+Un livre disponible
+```
