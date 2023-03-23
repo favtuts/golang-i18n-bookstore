@@ -104,3 +104,131 @@ Welcome!
 ```
 
 So in all cases we're seeing the "Welcome!" message in our en-GB source language. That's because we still need to provide Go's message package with the actual translations that we want to use. Without the actual translations, it falls back to displaying the message in the source language.
+
+# working with gotext
+
+Firt need to setup `$GOBIN` environment before running `go install`. Reference: https://stackoverflow.com/questions/25216765/gobin-not-set-cannot-run-go-install
+```
+$ which go
+/usr/local/go/bin/go
+
+$ sudo nano ~/.profile
+
+export GOPATH=$HOME/Projects/go
+export GOROOT=/usr/local/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOPATH:$GOBIN
+
+
+$ source ~/.profile
+$ echo $GOBIN
+/home/tvt/Projects/go/bin
+```
+
+Use `go install` to install the `gotext` executable on your machine:
+```
+$ go install golang.org/x/text/cmd/gotext@latest
+```
+
+All being well, the tool should be installed to your `$GOBIN` directory on your system path and you can run it like so:
+```
+$ which gotext
+/home/tvt/Projects/go/bin/gotext
+$ gotext
+
+
+gotext is a tool for managing text in Go source code.
+
+Usage:
+
+        gotext command [arguments]
+
+The commands are:
+
+        update      merge translations and generate catalog
+        extract     extracts strings to be translated from code
+        rewrite     rewrites fmt functions to use a message Printer
+        generate    generates code to insert translated messages
+
+Use "gotext help [command]" for more information about a command.
+
+Additional help topics:
+
+
+Use "gotext help [topic]" for more information about that topic.
+```
+
+
+Create that new directory and a `translations.go` file like so:
+```
+$ mkdir -p internal/translations
+$ touch internal/translations/translations.go
+```
+
+At this point, your project structure should look like this:
+```
+$ tree
+
+.
+├── README.md
+├── cmd
+│   └── www
+│       ├── handlers.go
+│       └── main.go
+├── go.mod
+├── go.sum
+└── internal
+    └── translations
+        └── translations.go
+
+4 directories, 6 files
+```
+
+The content of translactions.go as follow
+```go
+package translations
+
+//go:generate gotext -srclang=en-GB update -out=catalog.go -lang=en-GB,de-DE,fr-CH github.com/favtuts/golang-i18n-bookstore/cmd/www
+```
+
+When we execute this `go generate` command, `gotext` will walk the code for the `cmd/www` application and look for all calls to a `message.Printer`. It then extracts the relevant message strings and outputs them to some JSON files for translation.
+
+
+OK, let's put this into action and call `go generate` on our `translations.go` file. In turn, this will execute the `gotext` command that we included at the top of that file.
+
+```
+$ go generate ./internal/translations/translations.go
+de-DE: Missing entry for "Welcome!".
+fr-CH: Missing entry for "Welcome!".
+```
+
+If you take a look at the directory structure for your project, it should now look like this:
+
+```
+$ tree
+.
+├── README.md
+├── cmd
+│   └── www
+│       ├── handlers.go
+│       └── main.go
+├── go.mod
+├── go.sum
+└── internal
+    └── translations
+        ├── catalog.go
+        ├── locales
+        │   ├── de-DE
+        │   │   └── out.gotext.json
+        │   ├── en-GB
+        │   │   └── out.gotext.json
+        │   └── fr-CH
+        │       └── out.gotext.json
+        └── translations.go
+
+8 directories, 10 files
+```
+
+We can see that the `go generate` command has automatically generated an `internal/translations/catalog.go` file for us (which we'll look at in a minute), and a locales folder containing `out.gotext.json` files for each of our target languages.
+
+
