@@ -69,3 +69,38 @@ The locale is fr-ch
 $ curl localhost:4018/da-DK
 404 page not found
 ```
+
+
+# extracting and translating text content
+
+In this project we'll use British English (en-GB) as the default 'source' or 'base' language in our application, but we'll want to render a translated version of the welcome message in German and French for the other locales. To do this, we'll need to import the [golang.org/x/text/language](https://pkg.go.dev/golang.org/x/text/language) and [golang.org/x/text/message](https://pkg.go.dev/golang.org/x/text/message) packages
+
+
+After importing and updating codes in your `cmd/www/handlers.go` file. Then run `go mod tidy` to download the necessary dependencies…
+```
+$ go mod tidy
+go: finding module for package golang.org/x/text/message
+go: finding module for package golang.org/x/text/language
+go: found golang.org/x/text/language in golang.org/x/text v0.8.0
+go: found golang.org/x/text/message in golang.org/x/text v0.8.0
+```
+
+And then run the application:
+```
+$ go run ./cmd/www/
+2023/03/23 14:54:56 starting server on :4018...
+```
+
+When you make a request to any of the supported URLs, you should now see the (untranslated) `welcome` message like this:
+```
+$ curl localhost:4018/en-gb
+Welcome!
+
+$ curl localhost:4018/de-de
+Welcome!
+
+$ curl localhost:4018/fr-ch
+Welcome!
+```
+
+So in all cases we're seeing the "Welcome!" message in our en-GB source language. That's because we still need to provide Go's message package with the actual translations that we want to use. Without the actual translations, it falls back to displaying the message in the source language.
