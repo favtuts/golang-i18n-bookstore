@@ -269,3 +269,46 @@ Willkommen!
 $ curl localhost:4018/fr-ch
 Bienvenue !
 ```
+
+
+# using variables in translations
+
+To demonstrate, we'll update the HTTP response from our `handleHome()` function to include a `"{N} books available"` line, where `{N}` is an integer containing the number of books in our imaginary bookstore.
+
+Then use `go generate` to output some new `out.gotext.json` files. You should see warning messages for the new missing translations like so:
+```
+$ go generate ./internal/translations/translations.go
+de-DE: Missing entry for "{TotalBookCount} books available".
+fr-CH: Missing entry for "{TotalBookCount} books available".
+```
+
+There is now an entry for our new message. We can see that this has the form `"{TotalBookCount} books available"`, with the (capitalized) variable name from our Go code being used as the placeholder parameter. You should keep this in mind when writing your code, and try to use sensible and descriptive variable names that will make sense to your translators. The `placeholders` array also provides additional information about each placeholder value, the most useful part probably being the `type` value (which in this case tells the translator that the `TotalBookCount` value is an integer).
+
+
+So the next step is to send these new `out.gotext.json` files off to a translator for translation. Again, we'll simulate that here by copying them to `messages.gotext.json` files and adding the translations like so:
+```
+$ cp internal/translations/locales/de-DE/out.gotext.json internal/translations/locales/de-DE/messages.gotext.json
+$ cp internal/translations/locales/fr-CH/out.gotext.json internal/translations/locales/fr-CH/messages.gotext.json
+```
+
+Then run go generate to update our message catalog. This should run without any warnings.
+```
+$ go generate ./internal/translations/translations.go
+```
+
+When you restart the `cmd/www` application and make some HTTP requests again, you should now see the new translated messages like so:
+```
+$ curl localhost:4018/en-gb
+Welcome!
+1,252,794 books available
+
+$ curl localhost:4018/de-de
+Willkommen!
+1.252.794 Bücher erhältlich
+
+$ curl localhost:4018/fr-ch
+Bienvenue !
+1 252 794 livres disponibles
+```
+
+As we'll as the translations being applied by our `message.Printer`, it's also smart enough to output the interpolated integer value with the correct number formatting for each language. We can see here that our `en-GB` locale uses the "," character as a thousands separator, whereas `de-DE` uses "." and `fr-CH` uses the whitespace " ". A similar thing is done for decimal separators too.
