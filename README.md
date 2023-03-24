@@ -358,3 +358,85 @@ $ curl localhost:4018/fr-ch
 Bienvenue !
 Un livre disponible
 ```
+
+# creating a localizer abstraction
+
+We're going to create a new `internal/localizer` package which abstracts all our code for dealing with languages, printers and translations.
+
+Go ahead and create a new `internal/localizer` directory containing a `localizer.go` file.
+```
+$ mkdir -p internal/localizer
+$ touch internal/localizer/localizer.go
+```
+
+At this point, your project structure should look like this:
+```
+$ tree
+.
+├── README.md
+├── cmd
+│   └── www
+│       ├── handlers.go
+│       └── main.go
+├── go.mod
+├── go.sum
+└── internal
+    ├── localizer
+    │   └── localizer.go
+    └── translations
+        ├── catalog.go
+        ├── locales
+        │   ├── de-DE
+        │   │   ├── messages.gotext.json
+        │   │   └── out.gotext.json
+        │   ├── en-GB
+        │   │   ├── messages.gotext.json
+        │   │   └── out.gotext.json
+        │   └── fr-CH
+        │       ├── messages.gotext.json
+        │       └── out.gotext.json
+        └── translations.go
+
+9 directories, 14 files
+```
+
+By having all our translations go through the `Translate()` method — which uses `Sprintf()` behind-the-scenes — we avoid the scenario where you accidentally use a method like `Sprint()` or `Println()` and gotext doesn't extract the message to the `out.gotext.json` files.
+
+Next let's update the `cmd/www/handlers.go` file to use our new `Localizer` type, and — while we're at it — let's also make our `handleHome()` function render an additional `"Launching soon!"` message.
+
+Let's try this out and run `go generate` again:
+```
+$ go generate ./internal/translations/translations.go
+de-DE: Missing entry for "Launching soon!".
+fr-CH: Missing entry for "Launching soon!".
+```
+
+Copy the `out.gotext.json` files to `message.gotext.json` files, and add the necessary translations for the new `"Launching soon!"` message. 
+```
+$ cp internal/translations/locales/en-GB/out.gotext.json internal/translations/locales/en-GB/messages.gotext.json
+$ cp internal/translations/locales/de-DE/out.gotext.json internal/translations/locales/de-DE/messages.gotext.json
+$ cp internal/translations/locales/fr-CH/out.gotext.json internal/translations/locales/fr-CH/messages.gotext.json
+```
+
+Then remember to run `go generate` again and restart the web application.
+```
+$ go generate ./internal/translations/translations.go
+```
+
+When you make some HTTP requests again now, your responses should look similar to this:
+```
+$ curl localhost:4018/en-gb
+Welcome!
+1,252,794 books available
+Launching soon!
+
+$ curl localhost:4018/de-de
+Willkommen!
+1.252.794 Bücher erhältlich
+Bald verfügbar!
+
+$ curl localhost:4018/fr-ch
+Bienvenue !
+1 252 794 livres disponibles
+Bientôt disponible !
+```
