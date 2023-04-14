@@ -40,33 +40,38 @@ func init() {
 }
 
 var messageKeyToIndex = map[string]int{
-	"%d books available": 1,
-	"Launching soon!":    2,
+	"%d books available": 2,
+	"Launching soon!":    3,
 	"Welcome!":           0,
+	"Welcome: %s!":       1,
 }
 
-var de_DEIndex = []uint32{ // 4 elements
-	0x00000000, 0x0000000c, 0x00000045, 0x00000056,
-} // Size: 40 bytes
+var de_DEIndex = []uint32{ // 5 elements
+	0x00000000, 0x0000000c, 0x0000001f, 0x00000058,
+	0x00000069,
+} // Size: 44 bytes
 
-const de_DEData string = "" + // Size: 86 bytes
-	"\x02Willkommen!\x14\x01\x81\x01\x00=\x01\x15\x02Ein Buch erhältlich\x00" +
-	"\x1a\x02%[1]d Bücher erhältlich\x02Bald verfügbar!"
+const de_DEData string = "" + // Size: 105 bytes
+	"\x02Willkommen!\x02Willkommen: %[1]s!\x14\x01\x81\x01\x00=\x01\x15\x02Ei" +
+	"n Buch erhältlich\x00\x1a\x02%[1]d Bücher erhältlich\x02Bald verfügbar!"
 
-var en_GBIndex = []uint32{ // 4 elements
-	0x00000000, 0x00000009, 0x0000003c, 0x0000004c,
-} // Size: 40 bytes
+var en_GBIndex = []uint32{ // 5 elements
+	0x00000000, 0x00000009, 0x00000019, 0x0000004c,
+	0x0000005c,
+} // Size: 44 bytes
 
-const en_GBData string = "" + // Size: 76 bytes
-	"\x02Welcome!\x14\x01\x81\x01\x00=\x01\x13\x02One book available\x00\x16" +
-	"\x02%[1]d books available\x02Launching soon!"
+const en_GBData string = "" + // Size: 92 bytes
+	"\x02Welcome!\x02Welcome: %[1]s!\x14\x01\x81\x01\x00=\x01\x13\x02One book" +
+	" available\x00\x16\x02%[1]d books available\x02Launching soon!"
 
-var fr_CHIndex = []uint32{ // 4 elements
-	0x00000000, 0x0000000c, 0x00000043, 0x00000059,
-} // Size: 40 bytes
+var fr_CHIndex = []uint32{ // 5 elements
+	0x00000000, 0x0000000c, 0x0000001e, 0x00000055,
+	0x0000006b,
+} // Size: 44 bytes
 
-const fr_CHData string = "" + // Size: 89 bytes
-	"\x02Bienvenue !\x14\x01\x81\x01\x00=\x01\x14\x02Un livre disponible\x00" +
-	"\x19\x02%[1]d livres disponibles\x02Bientôt disponible !"
+const fr_CHData string = "" + // Size: 107 bytes
+	"\x02Bienvenue !\x02Bienvenue: %[1]s!\x14\x01\x81\x01\x00=\x01\x14\x02Un " +
+	"livre disponible\x00\x19\x02%[1]d livres disponibles\x02Bientôt disponib" +
+	"le !"
 
-	// Total table size 371 bytes (0KiB); checksum: 47347436
+	// Total table size 436 bytes (0KiB); checksum: 540BCBB1

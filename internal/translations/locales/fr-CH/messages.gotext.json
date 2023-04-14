@@ -7,6 +7,21 @@
             "translation": "Bienvenue !"
         },
         {
+            "id": "Welcome: {FullName}!",
+            "message": "Welcome: {FullName}!",
+            "translation": "Bienvenue: {FullName}!",
+            "placeholders": [
+                {
+                    "id": "FullName",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "fullName"
+                }
+            ]
+        },
+        {
             "id": "{TotalBookCount} books available",
             "message": "{TotalBookCount} books available",
             "translation": {

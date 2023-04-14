@@ -9,6 +9,23 @@
             "fuzzy": true
         },
         {
+            "id": "Welcome: {FullName}!",
+            "message": "Welcome: {FullName}!",
+            "translation": "Welcome: {FullName}!",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "FullName",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "fullName"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
             "id": "{TotalBookCount} books available",
             "message": "{TotalBookCount} books available",
             "translation": {

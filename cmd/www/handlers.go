@@ -15,10 +15,12 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var fullName = "Shane Van Boening"
 	var totalBookCount = 1_252_197
 
 	// Update these to use the new Translate() method.
 	fmt.Fprintln(w, l.Translate("Welcome!"))
+	fmt.Fprintln(w, l.Translate("Welcome: %s!", fullName))
 	fmt.Fprintln(w, l.Translate("%d books available", totalBookCount))
 
 	// Add an additional "Launching soon!" message.

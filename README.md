@@ -425,6 +425,8 @@ $ go generate ./internal/translations/translations.go
 
 When you make some HTTP requests again now, your responses should look similar to this:
 ```
+$ go run ./cmd/www/
+
 $ curl localhost:4018/en-gb
 Welcome!
 1,252,794 books available
